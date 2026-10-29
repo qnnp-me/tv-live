@@ -37,3 +37,7 @@ JDK 17；Android SDK `compileSdk 35`、`build-tools 35.0.0`。设置 `ANDROID_HO
 - TV 安装：先卸载旧 debug 包（签名不同不能覆盖），再装 release；源/PIN 会清空，首次用手机扫码重新导入。
 - 开机自启：TCL 需要 root 把包加入 `/system/etc/appwhitelist_bama.xml`，见仓外设备 notes；通用设备走标准 receiver。
 - GitHub Release：<https://github.com/qnnp-me/tv-live/releases/tag/v1.0.52>
+
+## License
+
+MIT © 2026 qnnp-me，见 `LICENSE`。
