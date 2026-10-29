@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.application'
+}
+
+// 发布签名与密码放仓外（~/.android-keys），缺失时 release 仍可 assemble 但不签名。
+// 路径可用 TVLIVE_RELEASE_KEYS 指向其他 properties 文件（公开仓库不写本机绝对路径）。
+def releaseKeysPath = System.getenv('TVLIVE_RELEASE_KEYS')
+def releaseKeysFile = releaseKeysPath != null && !releaseKeysPath.trim().isEmpty()
+        ? new File(releaseKeysPath)
+        : new File(System.getProperty('user.home'), '.android-keys/tvlive-release.properties')
+def releaseKeys = new Properties()
+if (releaseKeysFile.exists()) {
+    releaseKeysFile.withInputStream { releaseKeys.load(it) }
+}
+
+android {
+    namespace 'me.qnnp.tvlive'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'me.qnnp.tvlive'
+        minSdk 19
+        targetSdk 28
+        versionCode 53
+        versionName '1.0.52'
+    }
+
+    signingConfigs {
+        release {
+            if (releaseKeysFile.exists()) {
+                storeFile file(releaseKeys['storeFile'])
+                storePassword releaseKeys['storePassword']
+                keyAlias releaseKeys['keyAlias']
+                keyPassword releaseKeys['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+            if (releaseKeysFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // TV 侧载包，不走 Google Play；targetSdk 28 是 API 19 兼容选择。
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.1'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.1'
+    // 二维码（3b）：只用 core，不引 android-core/zxing 的 Activity 依赖。
+    implementation 'com.google.zxing:core:3.5.3'
+
+    testImplementation 'junit:junit:4.13.2'
+}

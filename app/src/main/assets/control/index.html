@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070C0D">
+<title>直播 · 手机控制</title>
+<style>
+  :root {
+    --ink: #070C0D;
+    --surface: #0B1214;
+    --text: #E8EDEA;
+    --muted: #7E908B;
+    --tally: #E36A4A;
+    --hairline: rgba(230, 236, 232, .07);
+    --danger: #D9534F;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--ink); color: var(--text); }
+  body {
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC",
+      "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    padding: max(14px, env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+    max-width: 430px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 15px; letter-spacing: .12em; font-weight: 700; margin: 0; }
+  .top {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 14px; min-height: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; flex: none; }
+  .brand .mark { width: 18px; height: 3px; background: var(--tally); border-radius: 2px; }
+  .status {
+    color: var(--muted); font-size: 12px; text-align: right;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+  }
+  .status .now { color: var(--tally); }
+  section { margin: 0 0 14px; }
+  .search-input {
+    width: 100%; height: 50px; font: inherit; font-size: 17px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: 12px; padding: 0 14px;
+  }
+  input::placeholder { color: #55625F; }
+  .results { margin-top: 8px; max-height: 42vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .res {
+    display: block; width: 100%; text-align: left; margin: 0 0 6px; min-height: 52px;
+    padding: 10px 12px; border-radius: 10px; border: 1px solid var(--hairline);
+    background: var(--surface);
+  }
+  .res .nm { display: block; font-weight: 600; font-size: 15px; word-break: break-all; }
+  .res .sub { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .res:active { background: rgba(232, 237, 234, .06); }
+  .search-count { color: var(--muted); font-size: 12px; margin-top: 4px; min-height: 16px; }
+  .empty { color: var(--muted); font-size: 13px; padding: 8px 2px; }
+  .field { display: block; margin-bottom: 8px; }
+  .field span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+  input[type=url], input[type=text], input[type=password], input[type=file] {
+    width: 100%; font: inherit; font-size: 16px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: 10px; padding: 0 12px; min-height: 48px;
+  }
+  .filepick {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: 1px dashed var(--hairline); border-radius: 10px; background: var(--surface);
+    padding: 0 12px; min-height: 48px; color: var(--muted); font-size: 14px;
+    position: relative; cursor: pointer;
+  }
+  .filepick:active { background: rgba(232, 237, 234, .06); }
+  .filepick .pick { color: var(--text); border: 1px solid var(--hairline);
+    border-radius: 8px; padding: 6px 12px; font-size: 13px; flex: none; }
+  .filepick input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+  .filepick .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  button {
+    font: inherit; color: var(--text); background: transparent; cursor: pointer;
+    border: 1px solid var(--hairline); border-radius: 10px;
+    padding: 0 14px; min-height: 44px; font-size: 14px;
+  }
+  button:active { background: rgba(232, 237, 234, .06); }
+  button:disabled { opacity: .35; cursor: default; }
+  .primary {
+    width: 100%; background: var(--tally); border-color: var(--tally); color: #180B07;
+    font-weight: 700; min-height: 48px; margin-top: 8px;
+  }
+  .manage { margin-top: 4px; }
+  .manage-toggle {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    min-height: 48px; color: var(--muted); font-size: 13px;
+  }
+  .manage-toggle .manage-meta { display: flex; align-items: center; gap: 8px; }
+  .manage-toggle .chev { font-size: 14px; }
+  .manage-panel { padding-top: 4px; }
+  .src {
+    border: 1px solid var(--hairline); border-radius: 10px;
+    background: var(--surface); padding: 12px; margin-bottom: 8px;
+  }
+  .src.off { opacity: .55; }
+  .src .top { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
+  .src .name { font-weight: 600; font-size: 14px; word-break: break-all; flex: 1; }
+  .src .state { color: var(--muted); font-size: 12px; margin-top: 2px; word-break: break-all; }
+  .src .state.err { color: var(--tally); }
+  .src .act { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .src .act button { min-height: 44px; padding: 0 10px; font-size: 13px; flex: 1 1 40%; }
+  button.danger { color: var(--danger); border-color: rgba(217, 83, 79, .35); }
+  button.pill {
+    border-radius: 999px; padding: 0 12px; min-height: 44px; font-size: 12px;
+    color: var(--muted); flex: none;
+  }
+  button.pill[data-on="1"] { color: var(--tally); border-color: rgba(227, 106, 74, .5); }
+  .row { display: flex; gap: 8px; margin-top: 8px; }
+  .row > * { flex: 1; min-width: 0; }
+  .gate {
+    position: fixed; inset: 0; background: var(--ink); z-index: 20;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .gate .box { width: 100%; max-width: 320px; text-align: center; }
+  .gate .pin {
+    letter-spacing: .5em; text-align: center; font-size: 22px; min-height: 48px;
+    font-variant-numeric: tabular-nums;
+  }
+  .gate h2 { font-size: 17px; margin: 0 0 6px; }
+  .gate p { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+  .gate .err { color: var(--tally); font-size: 13px; min-height: 19px; margin: 8px 0 12px; }
+  .gate button { width: 100%; min-height: 48px; }
+  .toast {
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    max-width: 90vw; padding: 10px 14px; border-radius: 9px;
+    background: #16211F; border: 1px solid var(--hairline); color: var(--text);
+    font-size: 13px; transition: opacity .18s, transform .18s; z-index: 30;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.err { border-color: rgba(227, 106, 74, .5); color: var(--tally); }
+  .hidden { display: none !important; }
+  @media (max-width: 340px) {
+    body { padding-left: 12px; padding-right: 12px; }
+    .src { padding: 10px; }
+    .src .act button { flex: 1 1 45%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="box">
+    <h2>连接电视</h2>
+    <p>输入电视设置页显示的 6 位 PIN</p>
+    <input class="pin" id="pinInput" type="password" inputmode="numeric" maxlength="6"
+           autocomplete="one-time-code" placeholder="••••••" aria-label="PIN">
+    <div class="err" id="gateErr"></div>
+    <button class="primary" id="pinGo">进入</button>
+  </div>
+</div>
+
+<div class="top">
+  <div class="brand"><span class="mark"></span><h1>直播</h1></div>
+  <div class="status" id="status">正在读取…</div>
+</div>
+
+<section>
+  <input class="search-input" id="search" type="search" placeholder="搜索频道，例如 CCTV1"
+         autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+         aria-label="搜索频道">
+  <div class="results" id="results"></div>
+  <div class="search-count" id="searchCount"></div>
+</section>
+
+<section>
+  <label class="field"><span>添加源</span>
+    <input type="url" id="url" placeholder="m3u / m3u8 地址" autocapitalize="off"
+           autocorrect="off" spellcheck="false">
+  </label>
+  <label class="filepick">
+    <span class="name" id="fileName">选择 m3u / m3u8 文件</span>
+    <span class="pick">浏览</span>
+    <input type="file" id="file" accept=".m3u,.m3u8,audio/x-mpegurl,application/vnd.apple.mpegurl,text/plain">
+  </label>
+  <button class="primary" id="addBtn">添加源</button>
+</section>
+
+<section class="manage">
+  <button class="manage-toggle" id="manageToggle" aria-expanded="false">
+    <span>源管理</span>
+    <span class="manage-meta"><span id="manageCount"></span><span class="chev" id="chev">▾</span></span>
+  </button>
+  <div class="manage-panel hidden" id="managePanel">
+    <div id="sources"></div>
+    <div class="row">
+      <button id="reload">重新加载全部</button>
+      <button id="changePin">换 PIN</button>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var PIN_KEY = 'tvlive_pin';
+  var TOKEN_KEY = 'tvlive_token';
+  var pin = '';
+  var tokenAuth = false;
+  var tokenRetried = false;
+  var state = null;
+  var busy = false;
+  var toastTimer = null;
+  var pollTimer = null;
+
+  var gate = document.getElementById('gate');
+  var gateErr = document.getElementById('gateErr');
+  var pinInput = document.getElementById('pinInput');
+  var status = document.getElementById('status');
+  var sourcesEl = document.getElementById('sources');
+  var manageCount = document.getElementById('manageCount');
+  var manageToggle = document.getElementById('manageToggle');
+  var managePanel = document.getElementById('managePanel');
+  var chev = document.getElementById('chev');
+  var searchInput = document.getElementById('search');
+  var resultsEl = document.getElementById('results');
+  var searchCount = document.getElementById('searchCount');
+  var searchTimer = null;
+  var searchSeq = 0;
+
+  function readPin() {
+    try { return localStorage.getItem(PIN_KEY) || ''; } catch (e) { return ''; }
+  }
+  function savePin(value) {
+    try { localStorage.setItem(PIN_KEY, value); } catch (e) { /* 隐私模式忽略 */ }
+  }
+  function readToken() {
+    try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+  }
+  function saveToken(value) {
+    try { localStorage.setItem(TOKEN_KEY, value); } catch (e) { /* 隐私模式忽略 */ }
+  }
+  function forgetToken() {
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) { /* 忽略 */ }
+  }
+  function clearCredentials() {
+    try {
+      localStorage.removeItem(PIN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+    } catch (e) { /* 忽略 */ }
+  }
+
+  // 二维码 URL：http://ip:port/?v=5#t=<token>（10 分钟内免 PIN）。
+  // 纯函数，便于独立验证：hash/search 都支持 #t=、?t=、&t=，其余参数忽略。
+  function extractToken(hash, search) {
+    var sources = [hash || '', search || ''];
+    for (var i = 0; i < sources.length; i++) {
+      var match = /(?:^|[#?&])t=([^&#?]+)/.exec(sources[i]);
+      if (match) {
+        try { return decodeURIComponent(match[1]); } catch (e) { return match[1]; }
+      }
+    }
+    return '';
+  }
+
+  // 鉴权头：token 与 PIN 只带一种。服务端按 6 位 PIN 校验 X-Pin，token 必须走
+  // X-TvLive-Token；两者同时带会被代理/旧服务端误判。
+  function authHeaders(isToken, credential, extra) {
+    var headers = {};
+    var source = extra || {};
+    for (var key in source) {
+      if (!Object.prototype.hasOwnProperty.call(source, key)) { continue; }
+      var lower = key.toLowerCase();
+      if (lower === 'x-pin' || lower === 'x-tvlive-token') { continue; }
+      headers[key] = source[key];
+    }
+    if (credential) {
+      if (isToken) { headers['X-TvLive-Token'] = credential; }
+      else { headers['X-Pin'] = credential; }
+    }
+    return headers;
+  }
+
+  function toast(message, isError) {
+    var el = document.getElementById('toast');
+    el.textContent = message;
+    el.className = 'toast show' + (isError ? ' err' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.className = 'toast'; }, 2600);
+  }
+
+  function showGate(message) {
+    gate.classList.remove('hidden');
+    gateErr.textContent = message || '';
+    pinInput.value = '';
+    setTimeout(function () { pinInput.focus(); }, 40);
+  }
+
+  function hideGate() {
+    gate.classList.add('hidden');
+  }
+
+  function api(path, options) {
+    options = options || {};
+    var headers = authHeaders(tokenAuth, pin, options.headers);
+    var init = { method: options.method || 'GET', headers: headers, cache: 'no-store' };
+    if (options.body !== undefined) { init.body = options.body; }
+    return fetch(path, init).then(function (response) {
+      return response.text().then(function (text) {
+        var data;
+        try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
+        if (response.status === 401) {
+          // 首屏二维码 token 可能刚生成/服务刚就绪：先重试一次再回 PIN，
+          // 避免首次扫码闪回 PIN 门（token 真过期时第二次仍 401，正常回 PIN）。
+          if (tokenAuth && !tokenRetried) {
+            tokenRetried = true;
+            return new Promise(function (resolve) {
+              setTimeout(resolve, 350);
+            }).then(function () {
+              return api(path, options);
+            });
+          }
+          clearCredentials();
+          pin = '';
+          tokenAuth = false;
+          showGate('PIN 错误，请重新输入');
+          throw new Error('PIN 错误');
+        }
+        if (response.status === 429) {
+          showGate(data.error || 'PIN 错误次数过多，请稍后再试');
+          throw new Error(data.error || '请稍后再试');
+        }
+        if (!response.ok) {
+          throw new Error(data.error || ('请求失败（' + response.status + '）'));
+        }
+        tokenRetried = false;
+        return data;
+      });
+    });
+  }
+
+  function esc(text) {
+    return String(text == null ? '' : text)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function renderMeta() {
+    if (!state) {
+      status.textContent = '正在读取…';
+      return;
+    }
+    if (state.ready === false) {
+      status.textContent = 'TV 正在加载…';
+      return;
+    }
+    var parts = [];
+    if (state.current && state.current.name) {
+      parts.push('<span class="now">' + esc(state.current.name) + '</span>');
+    }
+    parts.push((state.channels || 0) + ' 台');
+    if (state.fatalError) { parts.push('源异常'); }
+    status.innerHTML = parts.join(' · ');
+  }
+
+  function sourceStateText(source) {
+    if (!source.enabled) { return { text: '已停用 · ' + source.channels + ' 台', error: false }; }
+    if (source.lastError) { return { text: '读取失败：' + source.lastError, error: true }; }
+    return { text: '正常 · ' + source.channels + ' 台', error: false };
+  }
+
+  function renderSources() {
+    var list = (state && state.sources) || [];
+    manageCount.textContent = list.length ? list.length + ' 个源' : '';
+    if (state && state.ready === false) {
+      sourcesEl.innerHTML = '<div class="empty">TV 正在加载，稍后自动刷新。</div>';
+      return;
+    }
+    if (!list.length) {
+      sourcesEl.innerHTML = '<div class="empty">还没有源，先在上方添加。</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      var statusText = sourceStateText(s);
+      var kind = s.kind === 'URL' ? '链接' : '文件';
+      html += '<div class="src' + (s.enabled ? '' : ' off') + '" data-id="' + esc(s.id) + '">'
+        + '<div class="top"><div style="flex:1">'
+        + '<div class="name">' + esc(s.name) + '</div>'
+        + '<div class="state' + (statusText.error ? ' err' : '') + '">' + esc(kind) + ' · '
+        + esc(statusText.text) + '</div>'
+        + '</div>'
+        + '<button class="pill" data-act="toggle" data-on="' + (s.enabled ? '1' : '0') + '">'
+        + (s.enabled ? '已启用' : '已停用') + '</button>'
+        + '</div>'
+        + '<div class="act">'
+        + '<button data-act="up"' + (i === 0 ? ' disabled' : '') + '>↑ 上移</button>'
+        + '<button data-act="down"' + (i === list.length - 1 ? ' disabled' : '') + '>↓ 下移</button>'
+        + '<button data-act="rename">改名</button>'
+        + '<button data-act="location">改地址</button>'
+        + '<button class="danger" data-act="delete">删除</button>'
+        + '</div></div>';
+    }
+    sourcesEl.innerHTML = html;
+  }
+
+  function loadState(silent) {
+    return api('/api/state').then(function (data) {
+      state = data;
+      hideGate();
+      renderMeta();
+      renderSources();
+    }).catch(function (error) {
+      if (error && error.message === 'PIN 错误') { return; }
+      if (!silent) { toast(error.message || '读取状态失败', true); }
+    });
+  }
+
+  function withBusy(button, work) {
+    if (busy) { return; }
+    busy = true;
+    if (button) { button.disabled = true; }
+    var done = function () {
+      busy = false;
+      if (button) { button.disabled = false; }
+    };
+    Promise.resolve().then(work).then(function (message) {
+      done();
+      if (message) { toast(message); }
+    }).catch(function (error) {
+      done();
+      if (error && (error.message === 'PIN 错误' || String(error.message).indexOf('秒后再试') >= 0)) {
+        return;
+      }
+      toast(error.message || '操作失败', true);
+    });
+  }
+
+  function postJson(path, payload, success) {
+    return api(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function () {
+      return loadState(true);
+    }).then(function () { return success; });
+  }
+
+  function findSource(id) {
+    var list = (state && state.sources) || [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === id) { return list[i]; }
+    }
+    return null;
+  }
+
+  sourcesEl.addEventListener('click', function (event) {
+    var button = event.target.closest('button[data-act]');
+    if (!button) { return; }
+    var box = button.closest('.src');
+    if (!box) { return; }
+    var id = box.getAttribute('data-id');
+    var source = findSource(id);
+    if (!source) { return; }
+    var act = button.getAttribute('data-act');
+
+    if (act === 'toggle') {
+      withBusy(button, function () {
+        return postJson('/api/source/toggle', { id: id, enabled: !source.enabled },
+          source.enabled ? '已停用「' + source.name + '」' : '已启用「' + source.name + '」');
+      });
+      return;
+    }
+    if (act === 'up' || act === 'down') {
+      withBusy(button, function () {
+        return postJson('/api/source/order', { id: id, delta: act === 'up' ? -1 : 1 },
+          act === 'up' ? '已上移' : '已下移');
+      });
+      return;
+    }
+    if (act === 'rename') {
+      var name = window.prompt('源名称', source.name);
+      if (name === null) { return; }
+      name = name.trim();
+      if (!name) { toast('名称不能为空', true); return; }
+      withBusy(button, function () {
+        return postJson('/api/source/rename', { id: id, name: name }, '已改名');
+      });
+      return;
+    }
+    if (act === 'location') {
+      var current = source.kind === 'URL' ? (source.location || '') : '';
+      var isFile = source.kind !== 'URL';
+      var url = window.prompt(isFile
+        ? '新地址（当前为文件源，保存后变为 URL 源）' : '源地址', current);
+      if (url === null) { return; }
+      url = url.trim();
+      if (!url) { toast('地址不能为空', true); return; }
+      withBusy(button, function () {
+        return postJson('/api/source/location', { id: id, url: url },
+          isFile ? '已改为 URL 源，电视正在刷新' : '地址已更新，电视正在刷新');
+      });
+      return;
+    }
+    if (act === 'delete') {
+      if (!window.confirm('删除源「' + source.name + '」？其频道会从电视列表移除。')) { return; }
+      withBusy(button, function () {
+        return postJson('/api/source/delete', { id: id },
+          state && state.sources && state.sources.length <= 1 ? '已删除最后一个源' : '已删除「' + source.name + '」');
+      });
+    }
+  });
+
+  // ---------------------------------------------------------------- 添加源
+  function finishAdd(input, button) {
+    busy = false;
+    button.disabled = false;
+    if (input) {
+      input.value = '';
+      document.getElementById('fileName').textContent = '选择 m3u / m3u8 文件';
+    }
+  }
+
+  function addFromUrl(url, button) {
+    api('/api/source/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url })
+    }).then(function () {
+      document.getElementById('url').value = '';
+      return loadState(true);
+    }).then(function () {
+      finishAdd(null, button);
+      toast('已添加，电视正在刷新');
+    }).catch(function (error) {
+      finishAdd(null, button);
+      if (error && error.message === 'PIN 错误') { return; }
+      toast(error.message || '添加失败', true);
+    });
+  }
+
+  function addFromFile(file, button) {
+    if (file.size > 5 * 1024 * 1024) {
+      finishAdd(null, button);
+      toast('文件超过 5MB', true);
+      return;
+    }
+    var form = new FormData();
+    form.append('file', file, file.name);
+    api('/api/source/upload', { method: 'POST', body: form }).then(function () {
+      return loadState(true);
+    }).then(function () {
+      finishAdd(document.getElementById('file'), button);
+      toast('已导入，电视正在刷新');
+    }).catch(function (error) {
+      finishAdd(document.getElementById('file'), button);
+      if (error && error.message === 'PIN 错误') { return; }
+      toast(error.message || '上传失败', true);
+    });
+  }
+
+  document.getElementById('addBtn').addEventListener('click', function () {
+    if (busy) { return; }
+    var button = this;
+    var input = document.getElementById('file');
+    if (input.files && input.files.length) {
+      busy = true;
+      button.disabled = true;
+      addFromFile(input.files[0], button);
+      return;
+    }
+    var url = document.getElementById('url').value.trim();
+    if (!url) { toast('填地址或选择 m3u 文件', true); return; }
+    if (!/^https?:\/\//i.test(url)) { toast('地址需以 http:// 或 https:// 开头', true); return; }
+    busy = true;
+    button.disabled = true;
+    addFromUrl(url, button);
+  });
+
+  document.getElementById('file').addEventListener('change', function () {
+    var picked = this.files && this.files.length ? this.files[0].name : '';
+    document.getElementById('fileName').textContent = picked || '选择 m3u / m3u8 文件';
+  });
+
+  // ---------------------------------------------------------------- 源管理
+  manageToggle.addEventListener('click', function () {
+    var hidden = managePanel.classList.toggle('hidden');
+    manageToggle.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+    chev.textContent = hidden ? '▾' : '▴';
+  });
+
+  document.getElementById('reload').addEventListener('click', function () {
+    var button = this;
+    withBusy(button, function () {
+      return postJson('/api/reload', {}, '已重新加载').then(function (message) {
+        return loadState(true).then(function () { return message; });
+      });
+    });
+  });
+
+  document.getElementById('changePin').addEventListener('click', function () {
+    clearCredentials();
+    pin = '';
+    tokenAuth = false;
+    showGate('请输入电视上显示的 PIN');
+  });
+
+  // ---------------------------------------------------------------- 搜索 / 切台
+  function renderResults(data) {
+    var list = (data && data.results) || [];
+    var total = (data && data.total) || 0;
+    searchCount.textContent = total ? (total > list.length ? '前 ' + list.length + ' / ' + total : total + ' 台') : '';
+    if (!list.length) {
+      resultsEl.innerHTML = '<div class="empty">没有匹配的频道</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+      var item = list[i];
+      var sub = [item.group, item.source].filter(function (part) { return !!part; }).join(' · ');
+      html += '<button class="res" data-id="' + esc(item.id) + '" data-name="' + esc(item.name) + '">'
+        + '<span class="nm">' + esc(item.name) + '</span>'
+        + (sub ? '<span class="sub">' + esc(sub) + '</span>' : '')
+        + '</button>';
+    }
+    resultsEl.innerHTML = html;
+  }
+
+  function doSearch() {
+    var query = searchInput.value.trim();
+    var seq = ++searchSeq;
+    if (!query) {
+      resultsEl.innerHTML = '';
+      searchCount.textContent = '';
+      return;
+    }
+    api('/api/search?q=' + encodeURIComponent(query)).then(function (data) {
+      if (seq !== searchSeq) { return; }
+      renderResults(data);
+    }).catch(function (error) {
+      if (seq !== searchSeq) { return; }
+      if (error && error.message === 'PIN 错误') { return; }
+      resultsEl.innerHTML = '<div class="empty">搜索失败：' + esc(error.message || '未知错误') + '</div>';
+      searchCount.textContent = '';
+    });
+  }
+
+  searchInput.addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(doSearch, 260);
+  });
+  searchInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      clearTimeout(searchTimer);
+      doSearch();
+    }
+  });
+
+  resultsEl.addEventListener('click', function (event) {
+    var button = event.target.closest('button[data-id]');
+    if (!button) { return; }
+    var id = button.getAttribute('data-id');
+    var name = button.getAttribute('data-name') || '';
+    button.disabled = true;
+    api('/api/play', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id })
+    }).then(function () {
+      toast('已切换：' + name);
+      return loadState(true);
+    }).catch(function (error) {
+      if (error && error.message === 'PIN 错误') { return; }
+      toast(error.message || '切台失败', true);
+    }).then(function () {
+      button.disabled = false;
+    });
+  });
+
+  document.getElementById('pinGo').addEventListener('click', function () {
+    var value = pinInput.value.replace(/\D/g, '');
+    if (value.length !== 6) { gateErr.textContent = 'PIN 是 6 位数字'; return; }
+    pin = value;
+    tokenAuth = false;
+    tokenRetried = false;
+    gateErr.textContent = '';
+    api('/api/state').then(function (data) {
+      savePin(pin);
+      forgetToken();
+      state = data;
+      hideGate();
+      renderMeta();
+      renderSources();
+    }).catch(function (error) {
+      if (error && error.message === 'PIN 错误') { return; }
+      gateErr.textContent = error.message || '连接失败';
+    });
+  });
+
+  pinInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') { document.getElementById('pinGo').click(); }
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && pin) { loadState(true); }
+  });
+
+  function startPolling() {
+    clearInterval(pollTimer);
+    pollTimer = setInterval(function () {
+      if (!document.hidden && pin && !busy) { loadState(true); }
+    }, 10000);
+  }
+
+  var hashToken = extractToken(window.location.hash, window.location.search);
+  if (hashToken) { saveToken(hashToken); }
+  // 优先用二维码 token（hash 或上次保存的），其次才是 PIN；两者只带一种 header。
+  var storedToken = hashToken || readToken();
+  tokenAuth = !!storedToken;
+  pin = storedToken || readPin();
+  if (pin) {
+    hideGate();
+    loadState(false);
+  } else {
+    showGate('');
+  }
+  startPolling();
+})();
+</script>
+</body>
+</html>

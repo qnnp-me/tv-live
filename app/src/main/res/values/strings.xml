@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">直播</string>
+    <string name="brand">直播</string>
+
+    <string name="group_favorites">收藏</string>
+    <string name="group_all">全部</string>
+    <!-- 列表底部提示随焦点台是否在播切换（两段 OK）。 -->
+    <string name="list_hint_preview">OK 切预览 · → 操作列</string>
+    <string name="list_hint_play">OK 全屏 · → 操作列</string>
+    <string name="list_hint_groups">↑↓ 选组 · OK 进入列表</string>
+    <string name="list_hint_actions">↑↓ 选择 · OK 执行 · ← 返回列表</string>
+    <string name="list_hint_empty">← 返回分组</string>
+    <string name="list_empty_favorites">收藏为空</string>
+    <string name="list_empty_group">该分组没有频道</string>
+    <string name="now_preview">预览</string>
+    <string name="no_channel">没有频道</string>
+
+    <string name="empty_no_source">还没有频道源</string>
+    <string name="empty_load_detail">读取源失败：%1$s</string>
+    <string name="source_loading">读取中…</string>
+
+    <!-- 首启设置页（3b：真实 IP/端口/PIN + 二维码 + 本机 URL 导入） -->
+    <string name="setup_title">还没有频道源</string>
+    <string name="setup_sub">手机扫码，或打开下面的地址：粘贴 m3u / m3u8，或上传文件。</string>
+    <string name="setup_url_placeholder">http://192.168.x.x:18088</string>
+    <string name="setup_pin_placeholder">PIN ------</string>
+    <string name="setup_pin_value">PIN %1$s</string>
+    <string name="setup_hint">手机和电视连同一个 WiFi；扫码自动带 PIN。</string>
+    <string name="setup_action_local">在本机输入地址</string>
+    <string name="setup_qr_placeholder">二维码</string>
+    <string name="setup_qr_label">手机扫码设置</string>
+    <string name="setup_offline">请先连接 WiFi</string>
+    <string name="setup_offline_detail">连接 WiFi 后，手机扫码或打开下面的地址导入源。</string>
+    <string name="setup_control_offline_hint">手机控制未启动（端口被占用）；可先在本机输入地址导入。</string>
+    <string name="setup_url_dialog_title">输入 m3u / m3u8 地址</string>
+    <string name="setup_url_dialog_hint">http:// 或 https://</string>
+    <string name="setup_url_empty">地址不能为空</string>
+    <string name="setup_url_invalid">地址需以 http:// 或 https:// 开头</string>
+    <string name="setup_import_running">正在下载并校验源…</string>
+    <string name="setup_import_done">源已导入，正在刷新列表</string>
+    <string name="setup_import_failed">导入失败：%1$s</string>
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_cancel">取消</string>
+
+    <string name="exit_hint">再按一次返回退出</string>
+    <string name="volume_percent">音量 %1$d%%</string>
+    <string name="volume_muted">静音</string>
+    <string name="volume_max">最大</string>
+
+    <!-- 设置页 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_section_source">源</string>
+    <string name="settings_source_loading">读取中…</string>
+    <string name="settings_source_none">未导入源</string>
+    <string name="settings_source_error">读取源失败：%1$s</string>
+    <string name="settings_sources_failed">%1$d/%2$d 个源读取失败</string>
+    <string name="settings_sources_none_enabled">所有源已停用</string>
+    <string name="settings_sources_all_failed">所有源都读取失败：%1$s</string>
+    <string name="settings_source_detail_ok">%1$d 台 · 正常</string>
+    <string name="settings_source_detail_off">%1$d 台 · 已停用</string>
+    <string name="settings_source_detail_failed">%1$d 台 · %2$s</string>
+    <string name="settings_source_actions">操作：%1$s</string>
+    <string name="settings_source_enable">启用</string>
+    <string name="settings_source_disable">停用</string>
+    <string name="settings_source_reload">重载</string>
+    <string name="settings_source_rename">改名</string>
+    <string name="settings_source_location">改地址</string>
+    <string name="settings_source_location_title">源地址</string>
+    <string name="settings_source_location_running">正在下载并校验新地址…</string>
+    <string name="settings_source_location_done">源地址已更新，正在刷新列表</string>
+    <string name="settings_source_location_failed">改地址失败：%1$s</string>
+    <string name="settings_source_rename_title">源名称</string>
+    <string name="settings_source_name_empty">名称不能为空</string>
+    <string name="settings_source_renamed">已改名：%1$s</string>
+    <string name="settings_source_up">上移</string>
+    <string name="settings_source_down">下移</string>
+    <string name="settings_source_move_edge">已经到边界</string>
+    <string name="settings_source_delete">删除</string>
+    <string name="settings_source_delete_confirm">删除源「%1$s」？其频道会从列表移除。</string>
+    <string name="settings_source_deleted">已删除源「%1$s」</string>
+    <string name="settings_source_deleted_last">已删除最后一个源</string>
+    <string name="settings_source_enabled">已启用源「%1$s」</string>
+    <string name="settings_source_disabled">已停用源「%1$s」</string>
+    <string name="settings_source_reloading">正在重载「%1$s」…</string>
+    <string name="settings_source_reloaded">已重载源「%1$s」</string>
+    <string name="settings_source_reload_failed">重载失败：%1$s</string>
+    <string name="settings_source_save_failed">保存源配置失败：%1$s</string>
+    <string name="settings_reload_all">重新加载全部</string>
+    <string name="settings_add_source">添加源（手机页）</string>
+    <string name="settings_section_play">播放</string>
+    <string name="settings_play_switch_mode">切台方式</string>
+    <string name="settings_play_switch_keep">保留上一画面</string>
+    <string name="settings_play_switch_direct">极速直切</string>
+    <string name="settings_play_switch_dual">双画面</string>
+    <string name="settings_play_switch_keep_detail">切台时旧画面停住，直到新台出画</string>
+    <string name="settings_play_switch_direct_detail">切台时销毁并重建播放器，可能短暂黑屏</string>
+    <string name="settings_play_switch_dual_detail">同时缓冲新旧两路画面，首帧后无黑屏切换</string>
+    <string name="settings_play_switch_hint">效果不理想可换一种</string>
+    <string name="settings_play_render">视频渲染</string>
+    <string name="settings_play_render_auto">自动</string>
+    <string name="settings_play_render_surface">SurfaceView</string>
+    <string name="settings_play_render_texture">TextureView</string>
+    <string name="settings_play_render_auto_detail">按切台方式自动选择视频层</string>
+    <string name="settings_play_render_surface_detail">独立视频层，切台更快；不支持双画面</string>
+    <string name="settings_play_render_texture_detail">纹理层，支持保留画面与双画面</string>
+    <string name="settings_play_render_dual_degraded">SurfaceView 不支持双画面，已使用保留画面</string>
+    <string name="settings_play_boost">首帧加速</string>
+    <string name="settings_play_boost_detail">缩短起播缓冲，先出画再加深缓冲</string>
+    <string name="settings_play_card">切台提示</string>
+    <string name="settings_play_card_detail">切台时显示台名卡；关闭后只显示加载角标</string>
+    <string name="settings_play_speed">显示网速</string>
+    <string name="settings_play_speed_detail">切台/缓冲时在台名卡上显示实时网速</string>
+    <string name="settings_play_aspect">画面比例</string>
+    <string name="settings_play_aspect_fit">适应</string>
+    <string name="settings_play_aspect_stretch">拉伸</string>
+    <string name="settings_play_aspect_crop">裁剪</string>
+    <string name="settings_play_aspect_fit_detail">保持 16:9 等比显示，多余区域留黑边</string>
+    <string name="settings_play_aspect_stretch_detail">铺满整个画面，可能把画面拉变形</string>
+    <string name="settings_play_aspect_crop_detail">铺满画面并裁掉超出部分，不变形</string>
+    <!-- 用 ▶/▼ 而不是 ▸/▾：API 19 的部分 TV 固件字体缺少 U+25B8/U+25BE 字形，会显示成空白。 -->
+    <string name="settings_advanced_title_collapsed">▶ 高级设置 · %1$d 项</string>
+    <string name="settings_advanced_title_expanded">▼ 高级设置 · %1$d 项</string>
+    <string name="settings_adv_nav_width">导航宽度</string>
+    <string name="settings_adv_nav_width_narrow">窄 38%</string>
+    <string name="settings_adv_nav_width_standard">标准 44%</string>
+    <string name="settings_adv_nav_width_wide">宽 50%</string>
+    <string name="settings_adv_nav_width_narrow_detail">导航更窄，画面露出更多</string>
+    <string name="settings_adv_nav_width_standard_detail">默认宽度，兼顾台名与画面</string>
+    <string name="settings_adv_nav_width_wide_detail">导航更宽，长台名更完整</string>
+    <string name="settings_adv_auto_hide">自动收起</string>
+    <string name="settings_adv_auto_hide_5">5 秒</string>
+    <string name="settings_adv_auto_hide_8">8 秒</string>
+    <string name="settings_adv_auto_hide_15">15 秒</string>
+    <string name="settings_adv_auto_hide_off">不收起</string>
+    <string name="settings_adv_auto_hide_detail">无操作后自动收起导航；不收起时仅 Back/OK 收起</string>
+    <string name="settings_adv_clock">时钟角标</string>
+    <string name="settings_adv_clock_detail">整点/半点前 30 秒在右上角显示时间</string>
+    <string name="dual_switch_failed">双画面切台失败，已保持当前台</string>
+    <string name="dual_unavailable">双画面不可用，已切回保留画面</string>
+    <string name="dual_memory_low">设备内存不足，已使用保留画面</string>
+    <string name="transition_connecting">正在连接</string>
+    <string name="settings_source_add_later">用手机打开 %1$s 添加源</string>
+    <string name="settings_control_label">手机控制</string>
+    <string name="settings_control_value">%1$s · PIN %2$s</string>
+    <string name="settings_control_offline">手机控制未启动（端口 18088–18098 被占用）</string>
+    <string name="settings_qr_hint">扫码自动带 PIN，10 分钟内有效；Back 关闭</string>
+    <string name="settings_qr_pin">PIN %1$s</string>
+    <string name="settings_qr_inline_hint">扫码打开遥控页 · 10 分钟有效</string>
+    <string name="settings_qr_inline_wifi">请先连接 WiFi</string>
+    <string name="settings_qr_inline_service">手机控制服务未启动</string>
+    <string name="settings_qr_inline_placeholder">暂无二维码</string>
+    <string name="settings_section_system">系统</string>
+    <string name="settings_boot">开机自启</string>
+    <string name="settings_open_home">返回系统桌面</string>
+    <string name="settings_section_about">关于</string>
+    <string name="settings_version">版本</string>
+    <string name="settings_address">手机设置地址</string>
+    <string name="settings_last_error">最近错误</string>
+    <string name="settings_no_error">无</string>
+    <string name="settings_hint">↑↓ 选择 · OK 操作 · ←/Back 返回</string>
+    <string name="settings_on">开</string>
+    <string name="settings_off">关</string>
+    <string name="settings_boot_enabled">已开启开机自启</string>
+    <string name="settings_boot_disabled">已关闭开机自启</string>
+    <string name="settings_system_home_missing">未找到系统桌面，已打开桌面选择器</string>
+
+    <string name="menu_favorite">收藏</string>
+    <string name="menu_unfavorite">取消收藏</string>
+    <string name="menu_switch_source">切换线路</string>
+    <string name="menu_channel_info">频道信息</string>
+    <string name="menu_reload">重新加载列表</string>
+    <string name="menu_settings">设置</string>
+    <string name="menu_exit">退出</string>
+    <string name="menu_main_sub">菜单</string>
+    <string name="menu_fullscreen">全屏播放</string>
+    <string name="menu_hide_nav">收起导航</string>
+    <string name="menu_exit_fullscreen">退出全屏</string>
+    <string name="menu_source_single">该频道只有一个线路</string>
+    <string name="meta_join">%1$s · %2$s</string>
+
+    <string name="osd_meta_sources">%1$s · %2$d 个线路</string>
+    <string name="source_switched">线路 %1$d/%2$d</string>
+    <string name="switching_source">正在切换线路…</string>
+    <string name="network_retrying">网络不稳定，正在重试…</string>
+    <string name="channel_info_meta">%1$s · 线路 %2$d/%3$d</string>
+    <string name="channel_info_line">线路 %1$d/%2$d</string>
+    <string name="source_partial_failed">有 %1$d/%2$d 个源读取失败，已跳过</string>
+
+    <string name="no_such_channel">无此频道 %1$s</string>
+    <string name="digit_input">输入 %1$s</string>
+
+    <string name="auto_next_countdown">%1$d 秒后切换下一台 · 按任意键取消</string>
+    <string name="failure_streak_stopped">连续 5 个频道播放失败，请检查源</string>
+    <string name="auto_next_off">自动跳台已关闭</string>
+
+    <!-- 错误 OSD 消失后保留的右下角角标（批次 2e） -->
+    <string name="badge_auto_next">播放失败 · 3 秒后换台</string>
+    <string name="badge_preview_retry">播放失败 · 按 OK 重试</string>
+    <string name="badge_streak_stopped">连续 5 个失败 · 按 OK 重试</string>
+
+    <string name="play_failed">播放失败</string>
+    <string name="preview_failed">%1$s · 播放失败</string>
+    <string name="stream_ended">直播流已结束</string>
+    <string name="stalled">画面卡住，正在重试</string>
+    <string name="stalled_failed">画面卡住</string>
+    <string name="unsupported_4k_channel">本机是 1080p 面板，已跳过 4K 频道</string>
+
+    <string name="favorite_added">已收藏</string>
+    <string name="favorite_removed">已取消收藏</string>
+
+    <string name="reload_done">列表已重新加载</string>
+    <string name="skipped_sources">已跳过 %1$d 个非 http 源</string>
+    <string name="loading">加载中…</string>
+
+    <!-- 手机竖屏（批次 5a）：触摸提示与底部操作条。 -->
+    <string name="phone_hint_preview">点行预览 · 长按操作</string>
+    <string name="phone_hint_play">再点全屏 · 长按操作</string>
+    <string name="phone_hint_empty">点标签切换分组 · 长按行可收藏</string>
+    <string name="phone_actions_close">关闭</string>
+    <string name="phone_actions_hint">点按操作 · 点别处关闭</string>
+    <string name="phone_settings">设置</string>
+    <string name="fullscreen_back">返回</string>
+    <string name="settings_hint_touch">点按操作 · Back 关闭</string>
+</resources>

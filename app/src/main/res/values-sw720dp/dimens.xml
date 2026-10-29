@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1080p / sw720dp：设计稿 1:1（1920×1080 @240dpi）。 -->
+<resources>
+    <dimen name="brand_text">27sp</dimen>
+
+    <!-- 竖排分组栏：1080p 组项 56dp（设计稿 1:1）。 -->
+    <dimen name="group_item_height">56dp</dimen>
+    <dimen name="group_accent_width">3dp</dimen>
+    <dimen name="group_item_pad_start">14dp</dimen>
+    <dimen name="group_item_pad_end">10dp</dimen>
+    <dimen name="group_item_name_text">16sp</dimen>
+    <dimen name="group_item_sub_name_text">14sp</dimen>
+    <dimen name="group_item_count_text">13sp</dimen>
+    <dimen name="group_item_sub_count_text">11sp</dimen>
+    <dimen name="group_item_sub_indent">14dp</dimen>
+    <dimen name="group_item_gap">4dp</dimen>
+    <dimen name="group_dot_text">10sp</dimen>
+
+    <!-- 导航第三列：常驻频道操作列（24% 导航宽，1080p ≈203px）。 -->
+    <dimen name="action_item_height">56dp</dimen>
+    <dimen name="action_accent_width">3dp</dimen>
+    <dimen name="action_pad_start">12dp</dimen>
+    <dimen name="action_pad_end">3dp</dimen>
+    <dimen name="action_title_text">14sp</dimen>
+    <dimen name="action_item_text">17sp</dimen>
+    <dimen name="action_title_gap">4dp</dimen>
+
+    <dimen name="row_accent_width">3dp</dimen>
+    <dimen name="row_height">58dp</dimen>
+    <dimen name="row_num_text">17sp</dimen>
+    <dimen name="row_num_width">40dp</dimen>
+    <dimen name="row_name_text">23sp</dimen>
+    <dimen name="row_star_text">19sp</dimen>
+    <dimen name="row_star_width">24dp</dimen>
+    <dimen name="row_dot_text">16sp</dimen>
+    <dimen name="row_dot_width">24dp</dimen>
+    <dimen name="row_pad_start">28dp</dimen>
+    <dimen name="row_pad_end">16dp</dimen>
+    <dimen name="list_margin_top">17dp</dimen>
+
+    <dimen name="nav_grad_width">24dp</dimen>
+    <dimen name="sidebar_pad_top">51dp</dimen>
+    <dimen name="sidebar_pad_start">44dp</dimen>
+    <dimen name="hint_text">15sp</dimen>
+    <dimen name="hint_pad_top">18dp</dimen>
+    <dimen name="hint_pad_bottom">28dp</dimen>
+
+    <dimen name="now_pad_side">31dp</dimen>
+    <dimen name="now_num_text">22sp</dimen>
+    <dimen name="now_name_text">24sp</dimen>
+    <dimen name="now_meta_text">16sp</dimen>
+    <dimen name="now_gap">15dp</dimen>
+
+    <dimen name="osd_margin_side">44dp</dimen>
+    <dimen name="osd_margin_bottom">67dp</dimen>
+    <dimen name="osd_pad_v">19dp</dimen>
+    <dimen name="osd_pad_h">27dp</dimen>
+    <dimen name="osd_gap">19dp</dimen>
+    <dimen name="osd_num_text">28sp</dimen>
+    <dimen name="osd_name_text">24sp</dimen>
+    <dimen name="osd_meta_text">16sp</dimen>
+    <dimen name="osd_meta_gap">3dp</dimen>
+    <dimen name="osd_radius">10dp</dimen>
+
+    <dimen name="clock_margin_top">44dp</dimen>
+    <dimen name="clock_margin_end">41dp</dimen>
+    <dimen name="clock_text">22sp</dimen>
+
+    <dimen name="menu_pad_top">54dp</dimen>
+    <dimen name="menu_pad_bottom">54dp</dimen>
+    <dimen name="menu_pad_side">41dp</dimen>
+    <dimen name="menu_top_gap">41dp</dimen>
+    <dimen name="menu_kicker_text">24sp</dimen>
+    <dimen name="menu_sub_text">16sp</dimen>
+    <dimen name="menu_sub_gap">6dp</dimen>
+    <dimen name="menu_item_height">61dp</dimen>
+    <dimen name="menu_item_text">20sp</dimen>
+    <dimen name="menu_count_text">17sp</dimen>
+    <dimen name="menu_accent_width">3dp</dimen>
+    <dimen name="menu_count_gap">12dp</dimen>
+
+    <dimen name="toast_margin_top">54dp</dimen>
+    <dimen name="toast_text">20sp</dimen>
+    <dimen name="toast_pad_v">15dp</dimen>
+    <dimen name="toast_pad_h">28dp</dimen>
+    <dimen name="toast_radius">10dp</dimen>
+
+    <dimen name="empty_pad_side">160dp</dimen>
+    <dimen name="empty_title_text">36sp</dimen>
+    <dimen name="empty_detail_text">20sp</dimen>
+    <dimen name="empty_gap">18dp</dimen>
+
+    <dimen name="list_pad_bottom">8dp</dimen>
+    <dimen name="loading_text">16sp</dimen>
+    <dimen name="loading_margin_end">41dp</dimen>
+    <dimen name="loading_margin_bottom">44dp</dimen>
+    <dimen name="loading_pad_h">14dp</dimen>
+    <dimen name="loading_pad_v">8dp</dimen>
+    <dimen name="loading_radius">8dp</dimen>
+
+    <!-- 音量条：底部居中细条 + 百分比，2s 消失。 -->
+    <dimen name="volume_width">260dp</dimen>
+    <dimen name="volume_text">20sp</dimen>
+    <dimen name="volume_bar_height">4dp</dimen>
+    <dimen name="volume_margin_bottom">80dp</dimen>
+    <dimen name="volume_gap">12dp</dimen>
+
+    <!-- 首启设置页 / 设置页（设计稿 1:1） -->
+    <dimen name="setup_pad_side">44dp</dimen>
+    <dimen name="setup_pad_top">54dp</dimen>
+    <dimen name="setup_title_text">37sp</dimen>
+    <dimen name="setup_sub_text">19sp</dimen>
+    <dimen name="setup_url_text">22sp</dimen>
+    <dimen name="setup_hint_text">16sp</dimen>
+    <dimen name="setup_note_text">17sp</dimen>
+    <dimen name="setup_action_text">18sp</dimen>
+    <dimen name="setup_qr_label_text">16sp</dimen>
+    <dimen name="setup_gap">38dp</dimen>
+    <dimen name="setup_sub_gap">15dp</dimen>
+    <dimen name="setup_url_gap">28dp</dimen>
+    <dimen name="setup_url_margin_top">44dp</dimen>
+    <dimen name="setup_action_gap">38dp</dimen>
+    <dimen name="setup_action_pad_h">22dp</dimen>
+    <dimen name="setup_action_pad_v">13dp</dimen>
+    <dimen name="setup_qr_pad">15dp</dimen>
+    <dimen name="setup_qr_label_gap">15dp</dimen>
+    <dimen name="setup_qr_radius">10dp</dimen>
+    <dimen name="setup_action_radius">10dp</dimen>
+
+    <dimen name="settings_title_text">37sp</dimen>
+    <dimen name="settings_section_text">16sp</dimen>
+    <dimen name="settings_value_text">18sp</dimen>
+    <dimen name="settings_info_text">17sp</dimen>
+    <dimen name="settings_pad_top">42dp</dimen>
+    <dimen name="settings_section_gap_top">32dp</dimen>
+    <dimen name="settings_section_gap_bottom">9dp</dimen>
+    <dimen name="settings_hint_gap">26dp</dimen>
+
+    <!-- 源列表行：两行（名称 + 台数/状态）。 -->
+    <dimen name="settings_source_row_height">64dp</dimen>
+    <dimen name="settings_source_name_text">20sp</dimen>
+    <dimen name="settings_source_detail_text">16sp</dimen>
+
+    <!-- 设置页单行行（操作行 / 手机控制 / 开机自启…）：与菜单行同形，但归设置页所有。 -->
+    <dimen name="settings_row_height">61dp</dimen>
+    <dimen name="settings_row_pad_side">41dp</dimen>
+    <dimen name="settings_row_accent_width">3dp</dimen>
+    <dimen name="settings_row_label_text">20sp</dimen>
+    <dimen name="settings_row_value_gap">12dp</dimen>
+
+    <!-- 设置页「手机控制」区块：左侧文本 + 右侧常驻小二维码（批次 6）。 -->
+    <dimen name="settings_control_height">130dp</dimen>
+    <dimen name="settings_control_qr_size">120dp</dimen>
+</resources>

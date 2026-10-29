@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TV 视觉 token（v1.0 §7）：唯一强色 tally，只用于选中/收藏/焦点/当前台号。 -->
+<resources>
+    <color name="ink">#FF070C0D</color>
+    <color name="surface">#FF0B1214</color>
+    <color name="text">#FFE8EDEA</color>
+    <color name="muted">#FF7E908B</color>
+    <color name="tally">#FFE36A4A</color>
+    <color name="hairline">#12E6ECE8</color>
+
+    <color name="row_active">#FF142023</color>
+    <color name="row_num">#FF6E807B</color>
+    <color name="preview_bg">#FF05090A</color>
+    <color name="hint">#FF637570</color>
+    <!-- 导航覆盖层：90% 不透明；右缘 24dp 渐变到全透明。 -->
+    <color name="nav_bg">#E60B1012</color>
+    <color name="nav_fade_end">#000B1012</color>
+
+    <color name="menu_item">#FFAEBBB5</color>
+    <color name="menu_bg">#F0080D0F</color>
+    <color name="menu_scrim">#8A020607</color>
+    <color name="menu_active_bg">#0BFFFFFF</color>
+
+    <color name="osd_bg">#D1060B0C</color>
+    <color name="osd_border">#1AE6ECE8</color>
+    <color name="toast_bg">#E6060B0C</color>
+    <color name="toast_border">#1FE6ECE8</color>
+    <color name="clock">#D1FFFFFF</color>
+</resources>

@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>直播 App · 界面设计</title>
+<style>
+  :root {
+    --page-fg: var(--foreground, #e8edea);
+    --page-muted: var(--muted-foreground, #8a9694);
+    --page-border: var(--border, rgba(255,255,255,.12));
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .page {
+    color: var(--page-fg);
+    font-family: "Roboto", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: .9rem;
+    line-height: 1.45;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .8rem;
+    flex-wrap: wrap;
+    margin-bottom: .7rem;
+  }
+  .meta {
+    color: var(--page-muted);
+    font-size: .72rem;
+    letter-spacing: .02em;
+  }
+  .tabs {
+    display: flex;
+    gap: .15rem;
+    padding: .16rem;
+    border: 1px solid var(--page-border);
+    border-radius: 8px;
+  }
+  .tab {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--page-muted);
+    font: inherit;
+    font-size: .74rem;
+    padding: .32rem .58rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .tab[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--page-fg) 12%, transparent);
+    color: var(--page-fg);
+  }
+  .tab:focus-visible { outline: 1px solid var(--page-fg); outline-offset: 1px; }
+  .stage { position: relative; }
+  .panel[hidden] { display: none; }
+  .screen {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    container-type: inline-size;
+    background: #05090a;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0,0,0,.28);
+  }
+  .caption {
+    color: var(--page-muted);
+    font-size: .76rem;
+    max-width: 72ch;
+    margin: .55rem 0 0;
+  }
+  @media (max-width: 640px) {
+    .stage { overflow-x: auto; padding-bottom: .25rem; }
+    .screen { min-width: 560px; }
+    .tabs { width: 100%; justify-content: space-between; }
+    .tab { flex: 1; }
+  }
+
+  /* ---------- TV palette (inside the screen only) ---------- */
+  .screen {
+    --ink: #070c0d;
+    --surface: #0b1214;
+    --line: rgba(230,236,232,.07);
+    --text: #e8edea;
+    --muted: #7e908b;
+    --tally: #e36a4a;
+  }
+  .scene-svg { display: block; width: 100%; height: 100%; }
+
+  /* ---------- First run ---------- */
+  .setup-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #070c0d;
+  }
+  .setup-brand {
+    position: absolute;
+    top: 4.2cqw;
+    left: 3.4cqw;
+    color: var(--text);
+    font-size: 2.1cqw;
+    font-weight: 600;
+    letter-spacing: .08em;
+  }
+  .setup-inner {
+    width: 80%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3cqw;
+    align-items: center;
+  }
+  .setup-copy { min-width: 0; }
+  .setup-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2cqw;
+  }
+  .setup-qr .code {
+    width: 19cqw;
+    height: 19cqw;
+    padding: 1.2cqw;
+    background: #fff;
+    border-radius: .6cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .setup-qr .code img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .setup-qr .label {
+    color: var(--muted);
+    font-size: 1.25cqw;
+    white-space: nowrap;
+  }
+  .setup-title {
+    color: var(--text);
+    font-size: 2.9cqw;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .setup-sub {
+    color: var(--muted);
+    font-size: 1.5cqw;
+    line-height: 1.55;
+    margin-top: 1.2cqw;
+    max-width: 44ch;
+  }
+  .setup-url {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2cqw;
+    margin-top: 3.4cqw;
+    padding: 2.2cqw 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .setup-url .u {
+    color: var(--text);
+    font-family: var(--font-mono, monospace);
+    font-size: 1.75cqw;
+    letter-spacing: .01em;
+  }
+  .setup-url .pin {
+    color: var(--tally);
+    font-family: var(--font-mono, monospace);
+    font-size: 1.75cqw;
+  }
+  .setup-hint {
+    color: var(--muted);
+    font-size: 1.25cqw;
+    line-height: 1.5;
+    margin-top: 1.2cqw;
+  }
+  .setup-actions { margin-top: 3cqw; }
+  .setup-action {
+    display: inline-block;
+    color: var(--text);
+    font-size: 1.45cqw;
+    line-height: 1;
+    padding: 1.05cqw 1.7cqw;
+    border: 1px solid var(--tally);
+    border-radius: .6cqw;
+  }
+
+  /* ---------- Channel list ---------- */
+  .list-screen { display: flex; }
+  .sidebar {
+    width: 32%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 4.0cqw 0 2.2cqw 3.4cqw;
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+  }
+  .brand {
+    color: var(--text);
+    font-size: 2.1cqw;
+    font-weight: 600;
+    letter-spacing: .08em;
+    line-height: 1.1;
+  }
+  .groups {
+    display: flex;
+    gap: .9cqw;
+    margin-top: 2.2cqw;
+    padding-bottom: 1.2cqw;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .group {
+    color: var(--muted);
+    font-size: 1.38cqw;
+    line-height: 1.2;
+    white-space: nowrap;
+    padding-bottom: .9cqw;
+    margin-bottom: -1.2cqw;
+    border-bottom: .3cqw solid transparent;
+  }
+  .group.active {
+    color: var(--text);
+    border-bottom-color: var(--tally);
+  }
+  .channels {
+    flex: 1;
+    margin-top: 1.3cqw;
+    margin-left: -3.4cqw;
+    overflow: hidden;
+  }
+  .row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 4.55cqw;
+    padding: 0 2.2cqw 0 3.4cqw;
+    color: var(--muted);
+  }
+  .row.active {
+    background: #142023;
+    color: var(--text);
+  }
+  .row.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18%;
+    width: .32cqw;
+    height: 64%;
+    background: var(--tally);
+  }
+  .num {
+    width: 3.4cqw;
+    flex: 0 0 auto;
+    color: #6e807b;
+    font-size: 1.3cqw;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .02em;
+  }
+  .row.active .num { color: var(--tally); }
+  .name {
+    flex: 1;
+    min-width: 0;
+    font-size: 1.8cqw;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .star {
+    width: 2.2cqw;
+    flex: 0 0 auto;
+    text-align: right;
+    color: var(--tally);
+    font-size: 1.45cqw;
+    line-height: 1;
+  }
+  .hint {
+    margin-top: auto;
+    padding-top: 1.4cqw;
+    color: #637570;
+    font-size: 1.2cqw;
+    letter-spacing: .01em;
+  }
+  .preview {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #05090a;
+    border-left: 1px solid rgba(0,0,0,.4);
+  }
+  .video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+  }
+  .now {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2cqw;
+    padding: 1.8cqw 2.4cqw 0 2.4cqw;
+  }
+  .now-left { display: flex; align-items: baseline; gap: 1.2cqw; min-width: 0; }
+  .now-num {
+    color: var(--tally);
+    font-size: 1.7cqw;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .now-name {
+    color: var(--text);
+    font-size: 1.85cqw;
+    font-weight: 500;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .now-meta {
+    color: var(--muted);
+    font-size: 1.22cqw;
+    white-space: nowrap;
+  }
+
+  /* ---------- Fullscreen ---------- */
+  .full-screen { background: #000; }
+  .full-screen .scene-svg { position: absolute; inset: 0; }
+  .clock {
+    position: absolute;
+    top: 3.4cqw;
+    right: 3.2cqw;
+    color: rgba(255,255,255,.82);
+    font-size: 1.7cqw;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .04em;
+    text-shadow: 0 1px 10px rgba(0,0,0,.55);
+  }
+
+  /* ---------- Channel OSD ---------- */
+  .osd {
+    position: absolute;
+    left: 3.4cqw;
+    bottom: 5.2cqw;
+    display: flex;
+    align-items: center;
+    gap: 1.5cqw;
+    padding: 1.5cqw 2.1cqw;
+    background: rgba(6,11,12,.82);
+    border: 1px solid rgba(230,236,232,.1);
+    border-radius: .8cqw;
+  }
+  .osd-num {
+    color: var(--tally);
+    font-size: 2.2cqw;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .osd-name {
+    color: var(--text);
+    font-size: 1.9cqw;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  .osd-meta {
+    color: var(--muted);
+    font-size: 1.22cqw;
+    line-height: 1.3;
+    margin-top: .2cqw;
+  }
+
+  /* ---------- Menu ---------- */
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(2,6,7,.54);
+  }
+  .menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 31%;
+    display: flex;
+    flex-direction: column;
+    padding: 4.2cqw 3.2cqw;
+    background: rgba(8,13,15,.94);
+    border-left: 1px solid rgba(230,236,232,.1);
+  }
+  .menu-kicker {
+    color: var(--text);
+    font-size: 1.9cqw;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .menu-sub {
+    color: var(--muted);
+    font-size: 1.22cqw;
+    margin-top: .5cqw;
+  }
+  .menu-items {
+    margin: 3.2cqw -3.2cqw 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1cqw;
+    height: 4.8cqw;
+    padding: 0 3.2cqw;
+    color: #aebbb5;
+    font-size: 1.6cqw;
+    border-top: 1px solid var(--line);
+  }
+  .menu-item:first-child { border-top: 0; }
+  .menu-item.active {
+    color: var(--text);
+    background: rgba(255,255,255,.045);
+  }
+  .menu-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18%;
+    width: .3cqw;
+    height: 64%;
+    background: var(--tally);
+  }
+  .count {
+    color: var(--muted);
+    font-size: 1.3cqw;
+    font-variant-numeric: tabular-nums;
+  }
+  .menu-item.exit {
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+    color: #8a9694;
+  }
+  .exit-toast {
+    position: absolute;
+    left: 50%;
+    top: 4.2cqw;
+    transform: translateX(-50%);
+    padding: 1.2cqw 2.2cqw;
+    background: rgba(6,11,12,.9);
+    border: 1px solid rgba(230,236,232,.12);
+    border-radius: .8cqw;
+    color: var(--text);
+    font-size: 1.55cqw;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#08161a"/>
+      <stop offset=".52" stop-color="#163236"/>
+      <stop offset=".67" stop-color="#3d3a31"/>
+      <stop offset="1" stop-color="#070c0e"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#eca270" stop-opacity=".9"/>
+      <stop offset=".45" stop-color="#d98152" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#d98152" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d98b5f" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#d98b5f" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#d98b5f" stop-opacity="0"/>
+    </linearGradient>
+    <g id="scene">
+      <rect width="1600" height="900" fill="url(#sky)"/>
+      <circle cx="1110" cy="330" r="190" fill="url(#sun)"/>
+      <circle cx="1110" cy="330" r="52" fill="#e7a06b" opacity=".52"/>
+      <rect y="552" width="1600" height="130" fill="url(#haze)" opacity=".55"/>
+      <path d="M0 612 L250 500 L430 568 L650 468 L850 562 L1050 500 L1270 582 L1460 520 L1600 600 L1600 900 L0 900Z" fill="#0b1517"/>
+      <path d="M0 702 L220 620 L430 682 L650 580 L880 692 L1080 612 L1300 702 L1600 620 L1600 900 L0 900Z" fill="#070d0f"/>
+      <path d="M0 792 L300 730 L560 782 L820 710 L1100 790 L1360 720 L1600 780 L1600 900 L0 900Z" fill="#040809"/>
+      <path d="M0 842 L360 802 L680 842 L980 792 L1280 842 L1600 802 L1600 900 L0 900Z" fill="#020506"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="page">
+  <div class="head">
+    <div class="meta">1920×1080 · 10-foot · 无台标 · 无常驻 OSD</div>
+    <div class="tabs" role="tablist" aria-label="界面状态">
+      <button class="tab" type="button" data-tab="setup" aria-pressed="true">首次</button>
+      <button class="tab" type="button" data-tab="list" aria-pressed="false">列表</button>
+      <button class="tab" type="button" data-tab="full" aria-pressed="false">全屏</button>
+      <button class="tab" type="button" data-tab="osd" aria-pressed="false">换台</button>
+      <button class="tab" type="button" data-tab="menu" aria-pressed="false">菜单</button>
+      <button class="tab" type="button" data-tab="exit" aria-pressed="false">返回</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <section class="panel" data-panel="setup">
+      <div class="screen setup-screen">
+        <div class="setup-brand">直播</div>
+        <div class="setup-inner">
+          <div class="setup-copy">
+            <div class="setup-title">还没有频道源</div>
+            <div class="setup-sub">手机扫码，或打开下面的地址：粘贴 m3u / m3u8，或上传文件。</div>
+            <div class="setup-url"><span class="u">http://192.168.1.10:18088</span><span class="pin">PIN 123456</span></div>
+            <div class="setup-hint">手机和电视连同一个 WiFi；扫码自动带 PIN。</div>
+            <div class="setup-actions"><span class="setup-action">在本机输入地址</span></div>
+          </div>
+          <div class="setup-qr">
+            <div class="code"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlAAAAJQAQMAAAB7LMgGAAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlP//8i138cAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAG9SURBVHic7dQ5coRADABA/v9pHFCyjtmNbGsdtKqAQUdPpuv+tbhQKBQKhUKhUCgUCoVCoVCoP6OuFpGr7yf/PGcvCoVC7VH3Xc+VSya5cw6FQqH2qN4ap9fjJ4tCoVCfozLXSRQKhfpPVG179UWhUKhPUvMcI/E3yX5GoVCoLapGMO+e3otCoVCb1BlB5veB3vajUCjUCjXXW30/TLK9ikKhULvUbO18PWV0DIVCobaosz1zWe+ZejUKhULtUE8qG+u7XnM+KBQKtUs9A7n04q/WJp5ZFAqF2qP6eEXjv3JzRaJQKNQmNctXq2W1dgeOQqFQm1SUOtSZ3lEhFAqF2qJ6cx+bw1cLFAqF2qdmsVZyGdZraxaFQqF2qFxu9V2b69LrnSgUCrVJRWun84r6dA6FQqF2qTqa4zUf/0n1QKFQqB3qKHxDc931elmWKBQKtUJdLSYYTHKZQaFQqG3qvicwmdo3IRQKhdqkcizaTuYq0TEUCoX6DBWZzNbonSgUCvVJ6kVru6BnUSgUapea5xjO1XdeWKZQKBRqiapxDky29qBQKNQm9fNAoVAoFAqFQqFQKBQKhUKhfp36AgxYsa20hExxAAAAAElFTkSuQmCC" alt="手机设置二维码"></div>
+            <div class="label">手机扫码设置</div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">首启不预置任何源；手机扫码或打开地址，粘贴 m3u / 上传；电视自动进列表。电视无文件选择器时，按 OK 本机输入地址。</p>
+    </section>
+
+    <section class="panel" data-panel="list" hidden>
+      <div class="screen list-screen">
+        <aside class="sidebar">
+          <div class="brand">直播</div>
+          <div class="groups">
+            <span class="group">收藏</span>
+            <span class="group active">央视</span>
+            <span class="group">卫视</span>
+            <span class="group">地方</span>
+            <span class="group">港澳台</span>
+            <span class="group">其他</span>
+          </div>
+          <div class="channels">
+            <div class="row"><span class="num">01</span><span class="name">CCTV-1 综合</span><span class="star">★</span></div>
+            <div class="row"><span class="num">02</span><span class="name">CCTV-2 财经</span><span class="star"></span></div>
+            <div class="row active"><span class="num">03</span><span class="name">CCTV-3 综艺</span><span class="star"></span></div>
+            <div class="row"><span class="num">04</span><span class="name">CCTV-4 中文国际</span><span class="star"></span></div>
+            <div class="row"><span class="num">05</span><span class="name">CCTV-5 体育</span><span class="star"></span></div>
+            <div class="row"><span class="num">06</span><span class="name">CCTV-5+ 体育赛事</span><span class="star"></span></div>
+            <div class="row"><span class="num">07</span><span class="name">CCTV-6 电影</span><span class="star"></span></div>
+            <div class="row"><span class="num">08</span><span class="name">CCTV-7 国防军事</span><span class="star"></span></div>
+          </div>
+          <div class="hint">OK 全屏 · 长按 OK 菜单（收藏）</div>
+        </aside>
+        <div class="preview">
+          <div class="video">
+            <svg class="scene-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+          </div>
+          <div class="now">
+            <div class="now-left"><span class="now-num">03</span><span class="now-name">CCTV-3 综艺</span></div>
+            <span class="now-meta">央视 · 预览</span>
+          </div>
+        </div>
+      </div>
+      <p class="caption">导入后：左列表 + 右预览；选中即换预览，OK 全屏。收藏在长按 OK 的菜单第一项；列表不加载台标，149 个台在 566 MB 上也不拖。</p>
+    </section>
+
+    <section class="panel" data-panel="full" hidden>
+      <div class="screen full-screen">
+        <svg class="scene-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+        <div class="clock">20:30:00</div>
+      </div>
+      <p class="caption">全屏只有画面。整点 / 半点前后各 30 秒、共 1 分钟，右上角显示 HH:mm:ss；其余时间没有任何 UI。</p>
+    </section>
+
+    <section class="panel" data-panel="osd" hidden>
+      <div class="screen full-screen">
+        <svg class="scene-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+        <div class="osd">
+          <span class="osd-num">03</span>
+          <div>
+            <div class="osd-name">CCTV-3 综艺</div>
+            <div class="osd-meta">央视 · 1080i</div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">换台或按 OK 才出现 2.5 秒；不操作自动消失，不挡画面主体。</p>
+    </section>
+
+    <section class="panel" data-panel="menu" hidden>
+      <div class="screen full-screen">
+        <svg class="scene-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+        <div class="scrim"></div>
+        <aside class="menu">
+          <div class="menu-kicker">CCTV-3 综艺</div>
+          <div class="menu-sub">央视 · 03</div>
+          <div class="menu-items">
+            <div class="menu-item active">收藏</div>
+            <div class="menu-item">切换源 <span class="count">3</span></div>
+            <div class="menu-item">频道信息</div>
+            <div class="menu-item">重新加载列表</div>
+            <div class="menu-item">设置</div>
+            <div class="menu-item exit">退出</div>
+          </div>
+        </aside>
+      </div>
+      <p class="caption">长按 OK 或 MENU 呼出；播放不中断，返回即关。第一项就是收藏 / 取消收藏。</p>
+    </section>
+
+    <section class="panel" data-panel="exit" hidden>
+      <div class="screen list-screen">
+        <aside class="sidebar">
+          <div class="brand">直播</div>
+          <div class="groups">
+            <span class="group">收藏</span>
+            <span class="group active">央视</span>
+            <span class="group">卫视</span>
+            <span class="group">地方</span>
+            <span class="group">港澳台</span>
+            <span class="group">其他</span>
+          </div>
+          <div class="channels">
+            <div class="row"><span class="num">01</span><span class="name">CCTV-1 综合</span><span class="star">★</span></div>
+            <div class="row"><span class="num">02</span><span class="name">CCTV-2 财经</span><span class="star"></span></div>
+            <div class="row active"><span class="num">03</span><span class="name">CCTV-3 综艺</span><span class="star"></span></div>
+            <div class="row"><span class="num">04</span><span class="name">CCTV-4 中文国际</span><span class="star"></span></div>
+            <div class="row"><span class="num">05</span><span class="name">CCTV-5 体育</span><span class="star"></span></div>
+            <div class="row"><span class="num">06</span><span class="name">CCTV-5+ 体育赛事</span><span class="star"></span></div>
+            <div class="row"><span class="num">07</span><span class="name">CCTV-6 电影</span><span class="star"></span></div>
+            <div class="row"><span class="num">08</span><span class="name">CCTV-7 国防军事</span><span class="star"></span></div>
+          </div>
+          <div class="hint">OK 全屏 · 长按 OK 菜单（收藏）</div>
+        </aside>
+        <div class="preview">
+          <div class="video">
+            <svg class="scene-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+          </div>
+          <div class="now">
+            <div class="now-left"><span class="now-num">03</span><span class="now-name">CCTV-3 综艺</span></div>
+            <span class="now-meta">央视 · 预览</span>
+          </div>
+        </div>
+        <div class="exit-toast">再按一次返回退出</div>
+      </div>
+      <p class="caption">列表里第一次按返回只出提示；2 秒内再按一次才退出。全屏返回先回列表，菜单返回先关菜单。</p>
+    </section>
+  </div>
+</div>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const panels = Array.from(document.querySelectorAll('.panel'));
+  function show(name) {
+    tabs.forEach(function (t) { t.setAttribute('aria-pressed', String(t.dataset.tab === name)); });
+    panels.forEach(function (p) { p.hidden = p.dataset.panel !== name; });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () { show(t.dataset.tab); });
+  });
+</script>
+</body>
+</html>
